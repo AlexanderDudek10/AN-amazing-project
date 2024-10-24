@@ -21,23 +21,42 @@ def search_by_title(title):
     res_json = res.json()
     movies = res_json["results"]
 
-    # results = [movie for movie in movies if title.lower() in movie["title"].lower()]
-
     if movies:
-        click.echo(f"Movies matching '{title}':")
-
-        for movie in movies:
-            year = movie["release_date"].split("-")[0]
-            genre_ids = movie["genre_ids"]
-
-            genres = ""
-
-            for index, (genre) in enumerate(genre_ids):
-                genres += (
-                    f", {genre_dict.get(genre)}" if index > 0 else genre_dict.get(genre)
-                )
-
-            click.echo(f"- {movie['title']} ({year}) - {genres} \n")
-
+        return movies
     else:
         click.echo(f"No movies found with the title containing '{title}'.\n")
+
+
+def search_by_year(year):
+    url = f"{BASE_URL}/discover/movie?primary_release_year={year}&api_key={API_KEY}"
+    res = requests.get(url)
+    res_json = res.json()
+    movies = res_json["results"]
+
+    if movies:
+        return movies
+    else:
+        click.echo(f"No movies found within the year '{year}'.\n")
+
+
+def search_by_genres(genres):
+
+    genre_list = genres.split(",")
+    genre_arr = []
+
+    for genre in genre_list:
+        for k, v in genre_dict.items():
+            if v == genre:
+                genre_arr.append(k)
+
+    updated_genres = ",".join(map(str, genre_arr))
+
+    url = f"{BASE_URL}/discover/movie?with_genres={updated_genres}&api_key={API_KEY}"
+    res = requests.get(url)
+    res_json = res.json()
+    movies = res_json["results"]
+
+    if movies:
+        return movies
+    else:
+        click.echo(f"No movies found with the genres: '{genres}'.\n")
