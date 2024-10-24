@@ -1,4 +1,4 @@
-welcome = ("""
+welcome = """
 |.| - plankton
 /.\  - patrick
 |.||.| - mr. crabs    
@@ -57,11 +57,9 @@ _________________
                |     |       __/    /
                \     |_____________/
                 \___/
+         
+"""
 
-           
-           
-""")    
 
 def my_function():
     print(welcome)
-my_function()
