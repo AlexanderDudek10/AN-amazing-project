@@ -5,103 +5,24 @@
 
 # import welcome
 import click
-from connect_to_tmdb import search_by_title, search_by_year, search_by_genres
-from variables import genre_dict
-from utils import display_movies, get_genre_ids
-
-# welcome.my_function()
-
-# commands
+from commands.search import search
+from commands.wishlist import wishlist
 
 
-@click.command()
-@click.argument("cmd")
-@click.option("-t", "title", required=False, help="Title of the movie to search for.")
-@click.option("-y", "year", required=False, help="Year of movies to search for.")
-@click.option("-g", "genres", required=False, help="Genre(s) of movies to search for.")
-def cli(cmd, title, year, genres):
-    if cmd == "\search":
+@click.group()
+def cli():
+    """Main CLI group"""
+    pass
 
-        # only look for year
-        if year and not title and not genres:
-            movies = search_by_year(year)
-            display_movies(movies)
 
-        # only look for genres
-        elif genres and not title and not year:
-            movies = search_by_genres(genres)
-            display_movies(movies)
-
-        # only look for title
-        elif title and not year and not genres:
-            movies = search_by_title(title)
-            display_movies(movies)
-
-        # only look for title and genres
-        elif title and not year:
-            movies = search_by_title(title)
-            genre_ids = get_genre_ids(genres)
-
-            filtered_movies = [
-                movie
-                for movie in movies
-                if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
-            ]
-
-            if filtered_movies:
-                display_movies(filtered_movies)
-            else:
-                click.echo("No results found.\n")
-
-        # only look for title and year
-        elif title and not genres:
-            movies = search_by_title(title)
-            movies = [
-                movie for movie in movies if movie["release_date"].startswith(year)
-            ]
-
-            if movies:
-                display_movies(movies)
-            else:
-                click.echo("No results found.\n")
-
-        # look for title, year and genres
-        elif title and year and genres:
-            movies = search_by_title(title)
-            genre_ids = get_genre_ids(genres)
-
-            filtered_movies = [
-                movie
-                for movie in movies
-                if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
-            ]
-
-            if filtered_movies:
-                final_movies = [
-                    movie
-                    for movie in filtered_movies
-                    if movie["release_date"].startswith(year)
-                ]
-
-                if final_movies:
-                    display_movies(final_movies)
-                else:
-                    click.echo("No results found.\n")
-            else:
-                click.echo("No results found.\n")
-
-        else:
-            click.echo(
-                "\n-t to search for titles. '\search -t title'.\n-y for years. '\search -t title -y year'.\n-g for genres. '\search -t title -g genre,genre,genre' (no space between multiple genres).\n\nOr you can quit the program with 'exit'\n"
-            )
-    else:
-        click.echo(
-            "Unknown command. Use \search to find movies by title, year, genre or combination of any.\n"
-        )
+cli.add_command(search)
+cli.add_command(wishlist)
 
 
 def main():
     # welcome message goes here
+    # welcome.my_function()
+
     print("\nWelcome to the Movie Picker CLI!\n")
     print(
         "-t to search for titles. '\search -t title'.\n-y for years. '\search -t title -y year'.\n-g for genres. '\search -t title -g genre,genre,genre' (no space between multiple genres).\n\nOr you can quit the program with 'exit'\n"
@@ -116,9 +37,17 @@ def main():
 
         try:
             args = user_input.split()
-            # print(args)
+            print(args)
 
-            cli.main(args=args, standalone_mode=False)
+            if args[0] == "\search":
+                args[0] = "search"
+                cli.main(args=args, standalone_mode=False)
+            elif args[0] == "\wishlist":
+                args[0] = "wishlist"
+                cli.main(args=args, standalone_mode=False)
+            else:
+                print("Command not known.")
+
         except Exception as e:
             print(f"Error: {e}")
 

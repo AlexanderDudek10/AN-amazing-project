@@ -1,6 +1,6 @@
 import requests
 import click
-from variables import genre_dict
+from utils import genre_dict
 
 # TMDB API key
 API_KEY = "2689ee59db9c014d31fd30f77f57e447"
