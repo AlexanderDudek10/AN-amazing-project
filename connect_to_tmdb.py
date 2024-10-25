@@ -1,6 +1,7 @@
 import requests
 import click
 from utils import genre_dict
+import pandas as pd
 
 # TMDB API key
 API_KEY = "2689ee59db9c014d31fd30f77f57e447"
@@ -60,3 +61,32 @@ def search_by_genres(genres):
         return movies
     else:
         click.echo(f"No movies found with the genres: '{genres}'.\n")
+
+
+def new_wishlist_record(id):
+
+    url = f"{BASE_URL}/movie/{id}?api_key={API_KEY}"
+    res = requests.get(url)
+    movie = res.json()
+
+    if movie:
+
+        title = movie["title"]
+        genres = movie["genres"]
+        year = movie["release_date"].split("-")[0]
+        runtime = movie["runtime"]
+
+        genres = ", ".join([genre["name"].lower() for genre in movie["genres"]])
+
+        df2 = pd.DataFrame(
+            {
+                "id": [movie["id"]],
+                "title": [title],
+                "genres": [genres],
+                "year": [year],
+                "runtime": [runtime],
+            },
+            # index=[movie["id"]],
+        )
+
+        return df2
