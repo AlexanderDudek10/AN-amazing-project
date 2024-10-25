@@ -16,8 +16,31 @@ BASE_URL = "https://api.themoviedb.org/3"
 # functions
 
 
-def search_by_title(title):
-    url = f"{BASE_URL}/search/movie?query={title}&api_key={API_KEY}"
+def search_by_title(title, year, genres):
+
+    updated_genres = None
+
+    if genres:
+        genre_list = genres.split(",")
+        genre_arr = []
+
+        for genre in genre_list:
+            for k, v in genre_dict.items():
+                if v == genre:
+                    genre_arr.append(k)
+
+        updated_genres = ",".join(map(str, genre_arr))
+
+    url = (
+        f"{BASE_URL}/search/movie?query={title}&api_key={API_KEY}"
+        if title
+        else (
+            f"{BASE_URL}/discover/movie?primary_release_year={year}&api_key={API_KEY}"
+            if year
+            else f"{BASE_URL}/discover/movie?with_genres={updated_genres}&api_key={API_KEY}"
+        )
+    )
+
     res = requests.get(url)
     res_json = res.json()
     movies = res_json["results"]
@@ -25,42 +48,7 @@ def search_by_title(title):
     if movies:
         return movies
     else:
-        click.echo(f"No movies found with the title containing '{title}'.\n")
-
-
-def search_by_year(year):
-    url = f"{BASE_URL}/discover/movie?primary_release_year={year}&api_key={API_KEY}"
-    res = requests.get(url)
-    res_json = res.json()
-    movies = res_json["results"]
-
-    if movies:
-        return movies
-    else:
-        click.echo(f"No movies found within the year '{year}'.\n")
-
-
-def search_by_genres(genres):
-
-    genre_list = genres.split(",")
-    genre_arr = []
-
-    for genre in genre_list:
-        for k, v in genre_dict.items():
-            if v == genre:
-                genre_arr.append(k)
-
-    updated_genres = ",".join(map(str, genre_arr))
-
-    url = f"{BASE_URL}/discover/movie?with_genres={updated_genres}&api_key={API_KEY}"
-    res = requests.get(url)
-    res_json = res.json()
-    movies = res_json["results"]
-
-    if movies:
-        return movies
-    else:
-        click.echo(f"No movies found with the genres: '{genres}'.\n")
+        click.echo(f"No movies found.\n")
 
 
 def new_wishlist_record(id):
@@ -86,7 +74,6 @@ def new_wishlist_record(id):
                 "year": [year],
                 "runtime": [runtime],
             },
-            # index=[movie["id"]],
         )
 
         return df2

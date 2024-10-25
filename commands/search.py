@@ -1,5 +1,5 @@
 import click
-from connect_to_tmdb import search_by_title, search_by_year, search_by_genres
+from connect_to_tmdb import search_by_title
 from utils import display_movies, get_genre_ids
 
 
@@ -12,24 +12,9 @@ def search(title, year, genres):
     Search for movies by title, year, and genres.
     """
 
-    # only look for year
-    if year and not title and not genres:
-        movies = search_by_year(year)
-        display_movies(movies)
-
-    # only look for genres
-    elif genres and not title and not year:
-        movies = search_by_genres(genres)
-        display_movies(movies)
-
-    # only look for title
-    elif title and not year and not genres:
-        movies = search_by_title(title)
-        display_movies(movies)
-
     # only look for title and genres
-    elif title and not year:
-        movies = search_by_title(title)
+    if title and genres and not year:
+        movies = search_by_title(title, year, genres)
         genre_ids = get_genre_ids(genres)
 
         filtered_movies = [
@@ -44,8 +29,8 @@ def search(title, year, genres):
             click.echo("No results found.\n")
 
     # only look for title and year
-    elif title and not genres:
-        movies = search_by_title(title)
+    elif title and year and not genres:
+        movies = search_by_title(title, year, genres)
         movies = [movie for movie in movies if movie["release_date"].startswith(year)]
 
         if movies:
@@ -55,7 +40,7 @@ def search(title, year, genres):
 
     # look for title, year and genres
     elif title and year and genres:
-        movies = search_by_title(title)
+        movies = search_by_title(title, year, genres)
         genre_ids = get_genre_ids(genres)
 
         filtered_movies = [
@@ -79,6 +64,10 @@ def search(title, year, genres):
             click.echo("No results found.\n")
 
     else:
-        click.echo(
-            "\n-t to search for titles. '\search -t title'.\n-y for years. '\search -t title -y year'.\n-g for genres. '\search -t title -g genre,genre,genre' (no space between multiple genres).\n\nOr you can quit the program with 'exit'\n"
-        )
+        movies = search_by_title(title, year, genres)
+        display_movies(movies)
+
+    # else:
+    #     click.echo(
+    #         "\n-t to search for titles. '\search -t title'.\n-y for years. '\search -t title -y year'.\n-g for genres. '\search -t title -g genre,genre,genre' (no space between multiple genres).\n\nOr you can quit the program with 'exit'\n"
+    #     )

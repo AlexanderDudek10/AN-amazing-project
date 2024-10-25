@@ -37,7 +37,7 @@ def main():
 
         try:
             args = user_input.split()
-            print(args)
+            # print(args)
 
             if args[0] == "\search":
                 args[0] = "search"
@@ -49,8 +49,7 @@ def main():
                 print("Command not known.")
 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"\nError: {e}")
 
 
-if __name__ == "__main__":
-    main()
+main()
