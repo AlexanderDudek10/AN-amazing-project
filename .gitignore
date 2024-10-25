@@ -1,2 +1,4 @@
 wishlist.csv
-commands.txt
+# commands.txt
+.venv
+__pycache__
