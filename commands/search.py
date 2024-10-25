@@ -1,5 +1,5 @@
 import click
-from connect_to_tmdb import search_by_title
+from connect_to_tmdb import search_movies
 from utils import display_movies, get_genre_ids
 
 
@@ -14,7 +14,7 @@ def search(title, year, genres):
 
     # only look for title and genres
     if title and genres and not year:
-        movies = search_by_title(title, year, genres)
+        movies = search_movies(title, year, genres)
         genre_ids = get_genre_ids(genres)
 
         filtered_movies = [
@@ -30,7 +30,7 @@ def search(title, year, genres):
 
     # only look for title and year
     elif title and year and not genres:
-        movies = search_by_title(title, year, genres)
+        movies = search_movies(title, year, genres)
         movies = [movie for movie in movies if movie["release_date"].startswith(year)]
 
         if movies:
@@ -40,7 +40,7 @@ def search(title, year, genres):
 
     # look for title, year and genres
     elif title and year and genres:
-        movies = search_by_title(title, year, genres)
+        movies = search_movies(title, year, genres)
         genre_ids = get_genre_ids(genres)
 
         filtered_movies = [
@@ -64,7 +64,7 @@ def search(title, year, genres):
             click.echo("No results found.\n")
 
     else:
-        movies = search_by_title(title, year, genres)
+        movies = search_movies(title, year, genres)
         display_movies(movies)
 
     # else:
