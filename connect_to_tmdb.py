@@ -1,7 +1,6 @@
 import requests
-import click
-from utils import genre_dict
 import pandas as pd
+from utils import get_genre_ids, get_genre_filtered, genre_dict
 
 # TMDB API key
 API_KEY = "2689ee59db9c014d31fd30f77f57e447"
@@ -18,38 +17,43 @@ def search_movies(title, year, genres):
     updated_genres = None
 
     if genres:
-        genre_list = genres.split(",")
-        genre_arr = []
-
-        for genre in genre_list:
-            for k, v in genre_dict.items():
-                if v == genre:
-                    genre_arr.append(k)
-
-        updated_genres = ",".join(map(str, genre_arr))
+        updated_genres = get_genre_ids(genres)
+        print(updated_genres)
 
     url = "https://api.themoviedb.org/3/search/movie"
 
     params = {
-        "api_key": "2689ee59db9c014d31fd30f77f57e447",
+        "api_key": API_KEY,
         "query": title,
         "primary_release_year": year,
     }
 
     genre_url = f"https://api.themoviedb.org/3/discover/movie?with_genres={updated_genres}&api_key={API_KEY}"
 
-    if title and year == "Null":
-        response_genres = requests.get(genre_url).json()
-        res = response_genres["results"]
+    # get just genres
+    if title == None and year == None:
+        genre_movies = requests.get(genre_url).json()
+        movies = genre_movies["results"]
 
+        return movies
+
+    # get title/year + genres
     else:
         response = requests.get(url, params=params).json()
-        res = response["results"]
+        res_movies = response["results"]
 
+        print(res_movies)
+
+        # filter results by genres
         if genres:
-            response_genres = requests.get(genre_url)
+            # genre_movies = requests.get(genre_url).json()
+            # res_genre_movies = genre_movies["results"]
 
-            # filter results by genres
+            filtered_movies = get_genre_filtered(res_movies, updated_genres)
+
+            return filtered_movies
+
+        return res_movies
 
 
 def new_wishlist_record(id):

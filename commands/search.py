@@ -13,59 +13,66 @@ def search(title, year, genres):
     """
 
     # only look for title and genres
-    if title and genres and not year:
-        movies = search_movies(title, year, genres)
-        genre_ids = get_genre_ids(genres)
+    # if title and genres and not year:
+    #     movies = search_movies(title, year, genres)
+    #     genre_ids = get_genre_ids(genres)
 
-        filtered_movies = [
-            movie
-            for movie in movies
-            if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
-        ]
+    #     filtered_movies = [
+    #         movie
+    #         for movie in movies
+    #         if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
+    #     ]
 
-        if filtered_movies:
-            display_movies(filtered_movies)
-        else:
-            click.echo("No results found.\n")
+    #     if filtered_movies:
+    #         display_movies(filtered_movies)
+    #     else:
+    #         click.echo("No results found.\n")
 
-    # only look for title and year
-    elif title and year and not genres:
-        movies = search_movies(title, year, genres)
-        movies = [movie for movie in movies if movie["release_date"].startswith(year)]
+    # # only look for title and year
+    # elif title and year and not genres:
+    #     movies = search_movies(title, year, genres)
+    #     movies = [movie for movie in movies if movie["release_date"].startswith(year)]
 
-        if movies:
-            display_movies(movies)
-        else:
-            click.echo("No results found.\n")
+    #     if movies:
+    #         display_movies(movies)
+    #     else:
+    #         click.echo("No results found.\n")
 
-    # look for title, year and genres
-    elif title and year and genres:
-        movies = search_movies(title, year, genres)
-        genre_ids = get_genre_ids(genres)
+    # # look for title, year and genres
+    # elif title and year and genres:
+    #     movies = search_movies(title, year, genres)
+    #     genre_ids = get_genre_ids(genres)
 
-        filtered_movies = [
-            movie
-            for movie in movies
-            if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
-        ]
+    #     filtered_movies = [
+    #         movie
+    #         for movie in movies
+    #         if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
+    #     ]
 
-        if filtered_movies:
-            final_movies = [
-                movie
-                for movie in filtered_movies
-                if movie["release_date"].startswith(year)
-            ]
+    #     if filtered_movies:
+    #         final_movies = [
+    #             movie
+    #             for movie in filtered_movies
+    #             if movie["release_date"].startswith(year)
+    #         ]
 
-            if final_movies:
-                display_movies(final_movies)
-            else:
-                click.echo("No results found.\n")
-        else:
-            click.echo("No results found.\n")
+    #         if final_movies:
+    #             display_movies(final_movies)
+    #         else:
+    #             click.echo("No results found.\n")
+    #     else:
+    #         click.echo("No results found.\n")
 
-    else:
-        movies = search_movies(title, year, genres)
+    # else:
+    # movies = search_movies(title, year, genres)
+    # display_movies(movies)
+
+    movies = search_movies(title, year, genres)
+
+    if movies:
         display_movies(movies)
+    else:
+        click.echo("No results found.")
 
     # else:
     #     click.echo(

@@ -9,6 +9,7 @@ def display_movies(movies):
         genres = ", ".join(
             [genre_dict.get(genre_id, "Unknown") for genre_id in genre_ids]
         )
+
         click.echo(f"» {movie['id']} - {movie['title']} ({year}) - {genres}\n")
 
 
@@ -25,11 +26,29 @@ def get_genre_ids(genres):
         )
 
         if genre_id is not None:
-            genre_ids.append(genre_id)
+            genre_ids.append(str(genre_id))
         else:
             click.echo(f"Genre '{genre_name}' not found.")
 
-    return genre_ids
+    return ",".join(genre_ids)
+
+
+def get_genre_filtered(movies, genre_ids):
+    filtered_movies = [
+        movie
+        for movie in movies
+        if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
+    ]
+
+    return filtered_movies
+
+
+def get_yearly_filtered(movies, year):
+    filtered_movies = [
+        movie for movie in movies if movie["release_date"].startswith(year)
+    ]
+
+    return filtered_movies
 
 
 genre_dict = {

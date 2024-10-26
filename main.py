@@ -37,7 +37,7 @@ def main():
 
         try:
             args = user_input.split()
-            # print(args)
+            print(args)
 
             if args[0] == "\search":
                 args[0] = "search"
