@@ -30,22 +30,16 @@ def get_genre_ids(genres):
         else:
             click.echo(f"Genre '{genre_name}' not found.")
 
-    return ",".join(genre_ids)
+    return genre_ids
 
 
-def get_genre_filtered(movies, genre_ids):
+def get_title_filtered(movies, title):
+    print(movies, title)
+    
     filtered_movies = [
         movie
         for movie in movies
-        if all(genre_id in movie["genre_ids"] for genre_id in genre_ids)
-    ]
-
-    return filtered_movies
-
-
-def get_yearly_filtered(movies, year):
-    filtered_movies = [
-        movie for movie in movies if movie["release_date"].startswith(year)
+        if title in movie["title"]
     ]
 
     return filtered_movies
